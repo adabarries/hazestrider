@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    
-    //private Vector2 currentVelocity;
-
     private Rigidbody2D playerRigidBody;
     private Animator animator;
+    public LayerMask groundLayer;
 
+    [Header ("Movement")]
     public float movementSpeed = 3f;
     public float jumpForce = 3f;
+
     private bool facingRight = true;
     private float horizontalMovement = 0f;
-    private bool isGrounded = true;
+    private bool isGrounded = false;
     private bool isJumping = false;
+    private float jumpCount = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -27,33 +28,48 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float x = Input.GetAxis("Horizontal"); // x-axis
-        float y = Input.GetAxis("Vertical"); // y-axis
-        Vector2 dir = new Vector2(x, y); // direction (x and y)
-        horizontalMovement = x * movementSpeed;
-        animator.SetFloat("SpeedX", Mathf.Abs(horizontalMovement)); // run animation trigger
+        //Check if player is touching the ground
+        isGrounded = Physics2D.Raycast(transform.position, Vector2.down, 0.5f, groundLayer.value);
 
-        Walk(dir);
 
-        // Jump
+        // Horizontal movement and walking
+        float xAxis = Input.GetAxis("Horizontal"); 
+        float yAxis = Input.GetAxis("Vertical");
+        Vector2 dir = new Vector2(xAxis, yAxis); // direction (x and y)
+        horizontalMovement = xAxis * movementSpeed;
+
+        // Run method + animation trigger
+        animator.SetFloat("SpeedX", Mathf.Abs(horizontalMovement)); 
+        Run(dir);
+
+        // Jumping
         if (Input.GetButtonDown("Jump"))
         {
             GetComponent<Rigidbody2D>().velocity = Vector2.up * jumpForce;
+            isJumping = true;
+            animator.SetBool("isJumping", true);
+        }
+        else if (Input.GetButtonUp("Jump"))
+        {
+            isJumping = false;
+            animator.SetBool("isJumping", false);
         }
 
-        // check current player direction and flip sprite accordingly when player moves
-        if (x > 0 && !facingRight) // flip to face right
+        animator.SetFloat("SpeedY", playerRigidBody.velocity.y);
+
+        // Check current player direction and flip sprite accordingly when player moves
+        if (xAxis > 0 && !facingRight) // flip to face right
         {
             Flip();
         }
-        if (x < 0 && facingRight) // flip to face left
+        if (xAxis < 0 && facingRight) // flip to face left
         {
             Flip();
         }
 
     }
 
-    private void Walk(Vector2 dir)
+    private void Run(Vector2 dir)
     {
         playerRigidBody.velocity = (
             new Vector2(dir.x * movementSpeed, playerRigidBody.velocity.y)
@@ -68,4 +84,5 @@ public class CharacterMovement : MonoBehaviour
         gameObject.transform.localScale = currentScale;
         facingRight = !facingRight;
     }
+
 }

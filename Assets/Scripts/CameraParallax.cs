@@ -4,26 +4,30 @@ using UnityEngine;
 
 public class CameraParallax : MonoBehaviour
 {
-    public Camera cam;
-    public Transform player;
-
-    Vector2 startPosition;
-    float startZ;
-
-    Vector2 travel => (Vector2)cam.transform.position - startPosition;
-
-    Vector2 parallaxFactor; // objects that are further will move at the speed of camera
+    //private float length;
+    private float startPosition;
+    public float parallaxFactor;
+    public GameObject cam;
+    public float pixelsPerUnit;
 
     // Start is called before the first frame update
     void Start()
     {
-        startPosition = transform.position;
-        startZ = transform.position.z;
+        startPosition = transform.position.x;
+        //length = GetComponent<SpriteRenderer>().bounds.size.x;
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = startPosition + travel;
+        float distance = cam.transform.position.x * parallaxFactor;
+        Vector3 newPosition = new Vector3(startPosition + distance, transform.position.y, transform.position.z);
+        transform.position = PixelPerfectClamp(newPosition, pixelsPerUnit);
+    }
+
+    private Vector3 PixelPerfectClamp(Vector3 locationVector, float pixelsPerUnit)
+    {
+        Vector3 vectorInPixels = new Vector3(Mathf.CeilToInt(locationVector.x * pixelsPerUnit), Mathf.CeilToInt(locationVector.y * pixelsPerUnit), Mathf.CeilToInt(locationVector.z * pixelsPerUnit));
+        return vectorInPixels / pixelsPerUnit;
     }
 }

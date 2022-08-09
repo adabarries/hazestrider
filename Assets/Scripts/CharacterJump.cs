@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// code from Boards to Bits Gaming
+// code courtesy Boards to Bits Gaming
 public class CharacterJump : MonoBehaviour
 {
     public float fallMultiplier = 2.5f;
