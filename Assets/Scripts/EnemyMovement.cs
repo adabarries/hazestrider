@@ -6,41 +6,47 @@ public class EnemyMovement : MonoBehaviour
 {
     [Header ("Enemy")]
     // enemy transform
-    [SerializeField] private Transform enemy;
+    public Transform enemy;
 
     [Header ("Waypoints")]
     // points enemy will patrol between
-    [SerializeField] private Transform leftPoint;
-    [SerializeField] private Transform rightPoint;
+    public Transform leftPoint;
+    public Transform rightPoint;
 
     [Header ("Movement")]
     // parameters for movement
     private bool movingLeft;
-    [SerializeField] private float enemySpeed;
-    [SerializeField] private float idleDuration;
-    [SerializeField] private float idleCooldown;
-    private Vector2 initialScale;
+    private bool facingLeft;
+    public float enemySpeed;
+    public float idleDuration;
+    private float idleCooldown;
+
 
     [Header ("Animator")]
     // enemy animator
     [SerializeField] private Animator enemyAnimator;
 
 
-    // Start is called before the first frame update
     void Start()
     {
-        initialScale = enemy.localScale;
+        facingLeft = transform.localScale.x > 0;
     }
 
     // Update is called once per frame
     void Update()
     {
         // whoops the input script doesn't work for non-player objects
+        // so instead we're using transform
         if (movingLeft)
         {
+            Debug.Log("movingLeft.");
             if (enemy.position.x >= leftPoint.position.x)
             {
                 MoveInDirection(-1);
+                if (!facingLeft)
+                {
+                    Flip();
+                }
             }
             else
             {
@@ -49,9 +55,14 @@ public class EnemyMovement : MonoBehaviour
         }
         else
         {
+            Debug.Log("No longer movingLeft.");
             if (enemy.position.x <= rightPoint.position.x)
             {
                 MoveInDirection(1);
+                if (facingLeft)
+                {
+                    Flip();
+                }
             }
             else
             {
@@ -68,9 +79,6 @@ public class EnemyMovement : MonoBehaviour
         enemyAnimator.SetBool("isMoving", true);
         idleCooldown = 0;
 
-        // flip sprite dependent on direction moving
-        enemy.localScale = new Vector2(Mathf.Abs(initialScale.x) * dir, initialScale.y);
-
         // movement
         enemy.position = new Vector2(enemy.position.x + Time.deltaTime * dir, enemy.position.y);
     }
@@ -86,4 +94,14 @@ public class EnemyMovement : MonoBehaviour
         }
         
     }
+
+    private void Flip()
+    {
+        Vector2 currentScale = enemy.localScale;
+        currentScale.x *= -1;
+        enemy.localScale = currentScale;
+
+        facingLeft = !facingLeft;
+    }
+
 }
