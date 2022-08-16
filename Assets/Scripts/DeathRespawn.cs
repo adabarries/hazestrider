@@ -8,7 +8,7 @@ public class DeathRespawn : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Bad")
+        if (collision.gameObject.CompareTag("Bad"))
         {
             transform.position = spawnPoint.position;
             // refine this and add extras later

@@ -15,8 +15,8 @@ public class CharacterMovement : MonoBehaviour
     private bool facingRight = true;
     private float horizontalMovement = 0f;
     private bool isGrounded = false;
-    private bool isJumping = false;
-    private float jumpCount = 0;
+    
+    
 
     // Start is called before the first frame update
     void Start()
@@ -46,12 +46,12 @@ public class CharacterMovement : MonoBehaviour
         if (Input.GetButtonDown("Jump"))
         {
             GetComponent<Rigidbody2D>().velocity = Vector2.up * jumpForce;
-            isJumping = true;
+            
             animator.SetBool("isJumping", true);
         }
         else if (Input.GetButtonUp("Jump"))
         {
-            isJumping = false;
+            
             animator.SetBool("isJumping", false);
         }
 
