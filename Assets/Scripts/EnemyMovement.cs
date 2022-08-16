@@ -24,7 +24,7 @@ public class EnemyMovement : MonoBehaviour
 
     [Header ("Animator")]
     // enemy animator
-    [SerializeField] private Animator enemyAnimator;
+    public Animator enemyAnimator;
 
 
     void Start()
@@ -79,7 +79,7 @@ public class EnemyMovement : MonoBehaviour
         enemyAnimator.SetBool("isMoving", true);
         idleCooldown = 0;
 
-        // movement
+        // movement transforms the enemy position on the x-axis over time
         enemy.position = new Vector2(enemy.position.x + Time.deltaTime * dir, enemy.position.y);
     }
 
