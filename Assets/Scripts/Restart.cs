@@ -9,4 +9,9 @@ public class Restart : MonoBehaviour
     {
         SceneManager.LoadScene("LevelOne");
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
